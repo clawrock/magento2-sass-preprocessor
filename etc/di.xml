@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <virtualType name="AlternativeSourceProcessors">
+        <arguments>
+            <argument name="alternatives" xsi:type="array">
+                <item name="scss" xsi:type="array">
+                    <item name="class" xsi:type="string">ClawRock\SassPreprocessor\Adapter\Scss\Processor</item>
+                </item>
+                <item name="less" xsi:type="array">
+                    <item name="after" xsi:type="string">scss</item>
+                    <item name="class" xsi:type="string">Magento\Framework\Css\PreProcessor\Adapter\Less\Processor</item>
+                </item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="SassPreProcessorInstructionImportForSourceThemeDeploy" type="ClawRock\SassPreprocessor\Instruction\Import">
+        <arguments>
+            <argument name="relatedFileGenerator" xsi:type="object">FileGeneratorPublicationDecoratorForSourceThemeDeploy</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="AssetPreProcessorPoolForSourceThemeDeploy" type="Magento\Framework\View\Asset\PreProcessor\Pool">
+        <arguments>
+            <argument name="preprocessors" xsi:type="array">
+                <item name="scss" xsi:type="array">
+                    <item name="magento_import" xsi:type="array">
+                        <item name="class" xsi:type="string">ClawRock\SassPreprocessor\Instruction\MagentoImport</item>
+                    </item>
+                    <item name="import" xsi:type="array">
+                        <item name="after" xsi:type="string">magento_import</item>
+                        <item name="class" xsi:type="string">SassPreProcessorInstructionImportForSourceThemeDeploy</item>
+                    </item>
+                </item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="SassPreProcessorInstructionImportForBaseFlow" type="ClawRock\SassPreprocessor\Instruction\Import">
+        <arguments>
+            <argument name="relatedFileGenerator" xsi:type="object">FileGeneratorPublicationDecoratorForBaseFlow</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="AssetPreProcessorPool" type="Magento\Framework\View\Asset\PreProcessor\Pool">
+        <arguments>
+            <argument name="preprocessors" xsi:type="array">
+                <item name="scss" xsi:type="array">
+                    <item name="magento_import" xsi:type="array">
+                        <item name="class" xsi:type="string">ClawRock\SassPreprocessor\Instruction\MagentoImport</item>
+                    </item>
+                    <item name="import" xsi:type="array">
+                        <item name="after" xsi:type="string">magento_import</item>
+                        <item name="class" xsi:type="string">SassPreProcessorInstructionImportForBaseFlow</item>
+                    </item>
+                </item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <type name="ClawRock\SassPreprocessor\Instruction\MagentoImport">
+        <arguments>
+            <argument name="fileSource" xsi:type="object">Magento\Framework\Css\PreProcessor\File\Collector\Aggregated</argument>
+        </arguments>
+    </type>
+    <type name="Magento\Framework\Console\CommandListInterface">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="ClawRock_SassPreprocessor::gulp_install" xsi:type="object">ClawRock\SassPreprocessor\Console\Command\GulpInstall</item>
+                <item name="ClawRock_SassPreprocessor::gulp_theme" xsi:type="object">ClawRock\SassPreprocessor\Console\Command\GulpTheme</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\Framework\View\Asset\PreProcessor\Chain">
+        <plugin name="ClawRock_SassPreprocessor::chain_plugin" type="ClawRock\SassPreprocessor\Plugin\ChainPlugin"/>
+    </type>
+</config>

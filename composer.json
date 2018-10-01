@@ -1,0 +1,23 @@
+{
+    "name": "clawrock/magento2-sass-preprocessor",
+    "description": "Module for Sass processing during static content deployment",
+    "require": {
+        "magento/framework": "~101.0",
+        "leafo/scssphp": "^0.7.7"
+    },
+    "type": "magento2-module",
+    "version": "1.0.0",
+    "license": [
+        "OSL-3.0",
+        "AFL-3.0"
+    ],
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "ClawRock\\SassPreprocessor\\": ""
+        }
+    }
+}
+

@@ -1,0 +1,25 @@
+{
+  "name": "magento2-sass",
+  "description": "Magento2 sass compilation",
+  "keywords": [
+    "magento2",
+    "sass",
+    "scss",
+    "gulp",
+    "gulpfile",
+    "es6",
+    "preprocessing"
+  ],
+  "author": "Marcin Makałowski",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/preset-env": "^7.0.0",
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.7.0",
+    "gulp": "^3.9.1",
+    "gulp-less": "^4.0.1",
+    "gulp-rimraf": "^0.2.2",
+    "gulp-sass": "^4.0.1",
+    "gulp-sourcemaps": "^2.6.4"
+  }
+}
