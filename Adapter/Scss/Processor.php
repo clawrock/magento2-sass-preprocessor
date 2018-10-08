@@ -4,6 +4,7 @@ namespace ClawRock\SassPreprocessor\Adapter\Scss;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\App\State;
+use Magento\Framework\Phrase;
 use Magento\Framework\View\Asset\ContentProcessorException;
 use Magento\Framework\View\Asset\ContentProcessorInterface;
 use Magento\Framework\View\Asset\File;
@@ -100,9 +101,8 @@ class Processor implements ContentProcessorInterface
             }
 
             return $content;
-
         } catch (\Exception $e) {
-            throw new ContentProcessorException(__($e->getMessage()));
+            throw new ContentProcessorException(new Phrase($e->getMessage()));
         }
     }
 }

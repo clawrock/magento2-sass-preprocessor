@@ -7,7 +7,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class GulpInstall extends Command
+class GulpInstallCommand extends Command
 {
     const ROOT_FILES = ['.babelrc', 'gulpfile.babel.js', 'package.json'];
 
@@ -92,11 +92,6 @@ class GulpInstall extends Command
             $this->copy($this->modulePath . '/dev/tools/' . $file, $this->directoryList->getRoot() . '/' . $file);
         }
 
-        if (empty($this->copiedFiles)) {
-            $this->io->warning('No files copied');
-            return;
-        }
-
         $this->io->success(array_map(function ($file) {
             return $file . ' created!';
         }, $this->copiedFiles));
@@ -105,6 +100,8 @@ class GulpInstall extends Command
     /**
      * @param string $source
      * @throws \Magento\Framework\Exception\FileSystemException
+     *
+     * @SuppressWarnings(PHPMD.ElseExpression)
      */
     private function recursiveCopyToRoot($source)
     {

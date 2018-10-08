@@ -51,4 +51,15 @@ class File
 
         return !isset($pathInfo['basename'][0]) ? false : $pathInfo['basename'][0] === '_';
     }
+
+    public function readFileAsArray($path, $extension = null)
+    {
+        $result = @file($path);
+        if (!$result && $extension) {
+            $path .= '.' . $extension;
+            $result = @file($path);
+        }
+
+        return $result ?: [];
+    }
 }

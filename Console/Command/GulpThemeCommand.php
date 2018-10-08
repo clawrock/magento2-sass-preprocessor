@@ -2,12 +2,14 @@
 
 namespace ClawRock\SassPreprocessor\Console\Command;
 
+use Magento\Framework\Exception\FileSystemException;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Phrase;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class GulpTheme extends Command
+class GulpThemeCommand extends Command
 {
     const DEFAULT_THEMES_CONFIG = 'dev/tools/grunt/configs/themes.js';
     const GRUNT_CONFIG_FILE = 'grunt-config.json';
@@ -48,14 +50,14 @@ class GulpTheme extends Command
     private $questionFactory;
 
     /**
-     * @var \Symfony\Component\Console\Question\ChoiceQuestionFactory
-     */
-    private $choiceQuestionFactory;
-
-    /**
      * @var \Symfony\Component\Console\Style\SymfonyStyle
      */
     private $io;
+
+    /**
+     * @var \ClawRock\SassPreprocessor\Helper\File
+     */
+    private $fileHelper;
 
     public function __construct(
         \Magento\Store\Model\StoreManagerInterface $storeManager,
@@ -65,7 +67,7 @@ class GulpTheme extends Command
         \Magento\Framework\Component\ComponentRegistrarInterface $componentRegistrar,
         \Symfony\Component\Console\Style\SymfonyStyleFactory $styleFactory,
         \Symfony\Component\Console\Question\QuestionFactory $questionFactory,
-        \Symfony\Component\Console\Question\ChoiceQuestionFactory $choiceQuestionFactory
+        \ClawRock\SassPreprocessor\Helper\File $fileHelper
     ) {
         parent::__construct('dev:gulp:theme');
         $this->storeManager = $storeManager;
@@ -75,7 +77,7 @@ class GulpTheme extends Command
         $this->componentRegistrar = $componentRegistrar;
         $this->styleFactory = $styleFactory;
         $this->questionFactory = $questionFactory;
-        $this->choiceQuestionFactory = $choiceQuestionFactory;
+        $this->fileHelper = $fileHelper;
     }
 
     protected function configure()
@@ -103,7 +105,7 @@ class GulpTheme extends Command
                 $this->writeThemeConfig($themeConfig, $gruntConfig['themes']);
                 return;
             }
-            throw new LocalizedException(__('Grunt config file corrupted.'));
+            throw new LocalizedException(new Phrase('Grunt config file corrupted.'));
         }
         $this->writeThemeConfig($themeConfig, $this->directoryList->getRoot() . '/' . self::DEFAULT_THEMES_CONFIG);
     }
@@ -112,14 +114,10 @@ class GulpTheme extends Command
     {
         $themeConfigPath = $this->directoryList->getRoot() . '/' . $file;
 
-        $themeConfig = @file($themeConfigPath);
-        if (!$themeConfig) {
-            $themeConfigPath .= '.js';
-            $themeConfig = @file($themeConfigPath);
-        }
+        $themeConfig = $this->fileHelper->readFileAsArray($themeConfigPath, 'js');
 
-        if (!$themeConfig) {
-            throw new \Magento\Framework\Exception\FileSystemException(__('Theme config not found'));
+        if (empty($themeConfig)) {
+            throw new FileSystemException(new Phrase('Theme config not found'));
         }
 
         foreach ($themeConfig as $line => $content) {

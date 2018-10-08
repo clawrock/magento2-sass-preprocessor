@@ -61,8 +61,8 @@
     <type name="Magento\Framework\Console\CommandListInterface">
         <arguments>
             <argument name="commands" xsi:type="array">
-                <item name="ClawRock_SassPreprocessor::gulp_install" xsi:type="object">ClawRock\SassPreprocessor\Console\Command\GulpInstall</item>
-                <item name="ClawRock_SassPreprocessor::gulp_theme" xsi:type="object">ClawRock\SassPreprocessor\Console\Command\GulpTheme</item>
+                <item name="ClawRock_SassPreprocessor::gulp_install" xsi:type="object">ClawRock\SassPreprocessor\Console\Command\GulpInstallCommand</item>
+                <item name="ClawRock_SassPreprocessor::gulp_theme" xsi:type="object">ClawRock\SassPreprocessor\Console\Command\GulpThemeCommand</item>
             </argument>
         </arguments>
     </type>

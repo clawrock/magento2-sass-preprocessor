@@ -13,19 +13,9 @@ use Magento\Framework\View\Asset\PreProcessor\Chain;
 class ChainPlugin
 {
     /**
-     * @var \Magento\Framework\App\RequestInterface
-     */
-    private $request;
-
-    /**
      * @var \Magento\Developer\Console\Command\SourceThemeDeployCommand
      */
     private $sourceThemeDeployCommand;
-
-    /**
-     * @var \Symfony\Component\Console\Input\ArgvInputFactory
-     */
-    private $argvInputFactory;
 
     /**
      * @var \ClawRock\SassPreprocessor\Helper\File
@@ -33,29 +23,25 @@ class ChainPlugin
     private $fileHelper;
 
     /**
-     * @var \Symfony\Component\Console\Input\ArgvInput
+     * @var \ClawRock\SassPreprocessor\Helper\Cli
      */
-    private $input;
+    private $cliHelper;
 
     public function __construct(
-        \Magento\Framework\App\RequestInterface $request,
         \Magento\Developer\Console\Command\SourceThemeDeployCommand $sourceThemeDeployCommand,
-        \Symfony\Component\Console\Input\ArgvInputFactory $argvInputFactory,
-        \ClawRock\SassPreprocessor\Helper\File $fileHelper
+        \ClawRock\SassPreprocessor\Helper\File $fileHelper,
+        \ClawRock\SassPreprocessor\Helper\Cli $cliHelper
     ) {
-        $this->request = $request;
         $this->sourceThemeDeployCommand = $sourceThemeDeployCommand;
-        $this->argvInputFactory = $argvInputFactory;
         $this->fileHelper = $fileHelper;
+        $this->cliHelper = $cliHelper;
     }
 
     public function afterIsChanged(Chain $subject, $result)
     {
-        if (!$this->isSourceThemeDeployCommand()) {
+        if (!$this->cliHelper->isCli() || !$this->cliHelper->isCommand('dev:source-theme:deploy')) {
             return $result;
         }
-
-        $this->bindInput();
 
         if (!$this->isEntryFile($subject->getAsset()->getFilePath())) {
             return false;
@@ -66,8 +52,9 @@ class ChainPlugin
 
     private function isEntryFile($path)
     {
-        $files = $this->input->getArgument(SourceThemeDeployCommand::FILE_ARGUMENT);
-        $contentType = $this->input->getOption(SourceThemeDeployCommand::TYPE_ARGUMENT);
+        $input = $this->cliHelper->getInput($this->sourceThemeDeployCommand->getDefinition());
+        $files = $input->getArgument(SourceThemeDeployCommand::FILE_ARGUMENT);
+        $contentType = $input->getOption(SourceThemeDeployCommand::TYPE_ARGUMENT);
 
         foreach ($files as $file) {
             if ($file === $path || $this->fileHelper->fixFileExtension($file, $contentType) === $path) {
@@ -76,18 +63,5 @@ class ChainPlugin
         }
 
         return false;
-    }
-
-    private function isSourceThemeDeployCommand()
-    {
-        return PHP_SAPI === 'cli' && in_array('dev:source-theme:deploy', $this->request->getServerValue('argv', []));
-    }
-
-    private function bindInput()
-    {
-        if ($this->input === null) {
-            $this->input = $this->argvInputFactory->create();
-            $this->input->bind($this->sourceThemeDeployCommand->getDefinition());
-        }
     }
 }
