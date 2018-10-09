@@ -1,14 +1,33 @@
-# Magento 2 Sass Preprocessor
-Module for Sass processing during static content deployment with additional Gulp workflow to improve Magento 2 development speed.
+![Packagist](https://img.shields.io/packagist/v/clawrock/magento2-sass-preprocessor.svg)
+![Packagist](https://img.shields.io/packagist/dt/clawrock/magento2-sass-preprocessor.svg)
+[![Build Status](https://travis-ci.org/clawrock/magento2-sass-preprocessor.svg?branch=master)](https://travis-ci.org/clawrock/magento2-sass-preprocessor)
+[![Coverage Status](https://coveralls.io/repos/github/clawrock/magento2-sass-preprocessor/badge.svg)](https://coveralls.io/github/clawrock/magento2-sass-preprocessor)
 
-## Instalation
-`composer require clawrock/magento2-sass-preprocessor`
+# Magento 2 - Sass Preprocessor module
+Module for Sass processing during static content deployment with additional Gulp workflow to improve Magento 2 development speed. It compiles SCSS using `scssphp` and process standard `@import` instruction as well as `@magento_import`. 
 
-`php bin/magento setup:upgrade`
+## Installation
+1. Install module via composer `composer require clawrock/magento2-sass-preprocessor`
+2. Register module `php bin/magento setup:upgrade`
+3. Compile Sass theme using `php bin/magento setup:static-content:deploy -f`
 
-## Gulp
-`php bin/magento dev:gulp:install` - install Gulp 
+## Compatibility
+* Magento 2.2
+* PHP 7.0 - 7.1
+* Gulp 3.9
+* Node.js v8 or later
 
-`npm install`
+## Gulp workflow
+1. Install Node.js
+2. Install Gulp configuration `php bin/magento dev:gulp:install`
+3. Install Gulp and required dependencies `npm install`
+4. Define theme configuration `php bin/magento dev:gulp:theme`
+5. Symlink theme to pub/static folder `gulp exec:[theme_key]`
+6. Compile Scss `gulp scss:[theme_key]`
+7. Watch for changes `gulp watch:[theme_key]`
 
-`php bin/magento dev:gulp:theme` - define theme configuration
+## Compatible themes
+* [clawrock/magento2-theme-blank-sass](https://github.com/clawrock/magento2-theme-blank-sass)
+
+## Troubleshooting
+* If you have previously installed Grunt, please make sure you have removed package-lock.json and node_modules folder. Then run `npm install`.
