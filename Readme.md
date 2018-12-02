@@ -1,5 +1,5 @@
-![Packagist](https://img.shields.io/packagist/v/clawrock/magento2-sass-preprocessor.svg)
-![Packagist](https://img.shields.io/packagist/dt/clawrock/magento2-sass-preprocessor.svg)
+[![Packagist](https://img.shields.io/packagist/v/clawrock/magento2-sass-preprocessor.svg)](https://packagist.org/packages/clawrock/magento2-sass-preprocessor)
+[![Packagist](https://img.shields.io/packagist/dt/clawrock/magento2-sass-preprocessor.svg)](https://packagist.org/packages/clawrock/magento2-sass-preprocessor)
 [![Build Status](https://travis-ci.org/clawrock/magento2-sass-preprocessor.svg?branch=master)](https://travis-ci.org/clawrock/magento2-sass-preprocessor)
 [![Coverage Status](https://coveralls.io/repos/github/clawrock/magento2-sass-preprocessor/badge.svg)](https://coveralls.io/github/clawrock/magento2-sass-preprocessor)
 
@@ -12,8 +12,8 @@ Module for Sass processing during static content deployment with additional Gulp
 3. Compile Sass theme using `php bin/magento setup:static-content:deploy -f`
 
 ## Compatibility
-* Magento 2.2
-* PHP 7.0 - 7.1
+* Magento 2.2 - 2.3
+* PHP 7.0 - 7.2
 * Gulp 3.9
 * Node.js v8 or later
 
