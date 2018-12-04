@@ -1,12 +1,16 @@
 import gulp from 'gulp';
 import ThemeRegistry from '../utils/theme-registry';
 import config from '../config';
+import { initSync } from '../utils/sync';
+import path from 'path';
+import gutil from 'gulp-util';
+import chalk from 'chalk';
 
 function runThemeTask(task, file) {
     const themeRegistry = new ThemeRegistry();
     const theme = themeRegistry.getThemeKeyByFile(file);
     if (!theme) {
-        console.error(`Theme task not found for this file!`);
+        gutil.log(chalk.red(`Theme task not found for this file!`));
     }
 
     if (gulp.tasks[`${task}:${theme}`]) {
@@ -14,31 +18,37 @@ function runThemeTask(task, file) {
 
         return;
     }
-    console.error(`Task ${task}:${theme} not found!`);
+    gutil.log(chalk.red(`Task ${task}:${theme} not found!`));
+}
+
+function relativizePath(absolutePath) {
+    return path.relative(process.cwd(), absolutePath);
 }
 
 export default function (done, theme) {
-    const path = `${config.projectPath}/pub/static`;
+    const pubPath = `${config.projectPath}/pub/static`;
+
+    initSync();
 
     if (theme) {
         const themeRegistry = new ThemeRegistry();
         const themeConfig = themeRegistry.getTheme(theme);
         gulp.watch(`${themeConfig.path}**/*.${themeConfig.dsl}`, [`${themeConfig.dsl}:${theme}`]).on('change', stream => {
-            console.log(`File ${stream.path} was changed`);
+            gutil.log(chalk.white(`File ${relativizePath(stream.path)} was changed`));
         });
 
         return;
     }
 
-    gulp.watch(`${path}/**/*.less`).on('change', stream => {
-        console.log(`File ${stream.path} was changed`);
+    gulp.watch(`${pubPath}/**/*.less`).on('change', stream => {
+        gutil.log(chalk.white(`File ${relativizePath(stream.path)} was changed`));
 
         runThemeTask(`less`, stream.path);
 
     });
 
-    gulp.watch(`${path}/**/*.scss`).on('change', stream => {
-        console.log(`File ${stream.path} was changed`);
+    gulp.watch(`${pubPath}/**/*.scss`).on('change', stream => {
+        gutil.log(chalk.white(`File ${relativizePath(stream.path)} was changed`));
 
         runThemeTask(`scss`, stream.path);
     });

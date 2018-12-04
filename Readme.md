@@ -26,6 +26,9 @@ Module for Sass processing during static content deployment with additional Gulp
 6. Compile Scss `gulp scss:[theme_key]`
 7. Watch for changes `gulp watch:[theme_key]`
 
+## Browsersync
+Pass `--proxy http://magento.test` argument to `gulp watch` or `gulp watch:[theme_key]` where http://magento.test is Magento base url and Browsersync will be automatically enabled.
+
 ## Compatible themes
 * [clawrock/magento2-theme-blank-sass](https://github.com/clawrock/magento2-theme-blank-sass)
 
