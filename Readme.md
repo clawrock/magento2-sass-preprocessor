@@ -1,5 +1,5 @@
-![Packagist](https://img.shields.io/packagist/v/clawrock/magento2-sass-preprocessor.svg)
-![Packagist](https://img.shields.io/packagist/dt/clawrock/magento2-sass-preprocessor.svg)
+[![Packagist](https://img.shields.io/packagist/v/clawrock/magento2-sass-preprocessor.svg)](https://packagist.org/packages/clawrock/magento2-sass-preprocessor)
+[![Packagist](https://img.shields.io/packagist/dt/clawrock/magento2-sass-preprocessor.svg)](https://packagist.org/packages/clawrock/magento2-sass-preprocessor)
 [![Build Status](https://travis-ci.org/clawrock/magento2-sass-preprocessor.svg?branch=master)](https://travis-ci.org/clawrock/magento2-sass-preprocessor)
 [![Coverage Status](https://coveralls.io/repos/github/clawrock/magento2-sass-preprocessor/badge.svg)](https://coveralls.io/github/clawrock/magento2-sass-preprocessor)
 
@@ -12,8 +12,8 @@ Module for Sass processing during static content deployment with additional Gulp
 3. Compile Sass theme using `php bin/magento setup:static-content:deploy -f`
 
 ## Compatibility
-* Magento 2.2
-* PHP 7.0 - 7.1
+* Magento 2.2 - 2.3
+* PHP 7.0 - 7.2
 * Gulp 3.9
 * Node.js v8 or later
 
@@ -25,6 +25,9 @@ Module for Sass processing during static content deployment with additional Gulp
 5. Symlink theme to pub/static folder `gulp exec:[theme_key]`
 6. Compile Scss `gulp scss:[theme_key]`
 7. Watch for changes `gulp watch:[theme_key]`
+
+## Browsersync
+Pass `--proxy http://magento.test` argument to `gulp watch` or `gulp watch:[theme_key]` where http://magento.test is Magento base url and Browsersync will be automatically enabled.
 
 ## Compatible themes
 * [clawrock/magento2-theme-blank-sass](https://github.com/clawrock/magento2-theme-blank-sass)
