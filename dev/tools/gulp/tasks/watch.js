@@ -1,11 +1,12 @@
 import gulp from 'gulp';
 import AssetDeployer from '../utils/asset-deployer';
 import ThemeRegistry from '../utils/theme-registry';
-import { initSync } from '../utils/sync';
+import { initSync, syncReload, isSyncEnabled } from '../utils/sync';
 import path from 'path';
 import log from 'fancy-log';
 import chalk from 'chalk';
 import del from 'del';
+import { argv } from 'yargs';
 
 function relativizePath(absolutePath) {
     return path.relative(process.cwd(), absolutePath);
@@ -62,4 +63,27 @@ export default function (done, theme) {
         'app/code/**/requirejs-config.js',
         `${themeConfig.sourcePath}**/requirejs-config.js`
     ], requireJsCallback);
+
+    if (!isSyncEnabled()) {
+        return;
+    }
+
+    const reload = cb => {
+        syncReload();
+        cb();
+    };
+
+    if (argv.phtml) {
+        gulp.watch([
+            'app/code/**/*.phtml',
+            `${themeConfig.sourcePath}**/*.phtml`
+        ], reload);
+    }
+
+    if (argv.js) {
+        gulp.watch([
+            'app/code/**/*.js',
+            `${themeConfig.sourcePath}**/*.js`
+        ], reload);
+    }
 }
