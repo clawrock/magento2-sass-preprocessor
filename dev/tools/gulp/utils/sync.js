@@ -1,5 +1,5 @@
 import browserSync from 'browser-sync';
-import gutil from 'gulp-util';
+import log from 'fancy-log';
 import chalk from 'chalk';
 import { argv } from 'yargs';
 
@@ -7,12 +7,18 @@ const bs = browserSync.create('magento2');
 
 export function initSync(options = {}) {
     if (!argv.proxy) {
-        gutil.log(chalk.yellow('BrowserSync is disabled, please specify proxy argument.'));
+        log.info(chalk.yellow('BrowserSync is disabled, please specify proxy argument.'));
 
         return;
     }
 
+    const domain = `.${argv.proxy.split('//')[1]}`;
+
     const config = Object.assign(options, {
+        rewriteRules: [{
+            match: domain,
+            replace: ""
+        }],
         proxy: argv.proxy
     });
 

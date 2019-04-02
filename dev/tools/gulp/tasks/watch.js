@@ -1,55 +1,65 @@
 import gulp from 'gulp';
+import AssetDeployer from '../utils/asset-deployer';
 import ThemeRegistry from '../utils/theme-registry';
-import config from '../config';
 import { initSync } from '../utils/sync';
 import path from 'path';
-import gutil from 'gulp-util';
+import log from 'fancy-log';
 import chalk from 'chalk';
-
-function runThemeTask(task, file) {
-    const themeRegistry = new ThemeRegistry();
-    const theme = themeRegistry.getThemeKeyByFile(file);
-    if (!theme) {
-        gutil.log(chalk.red(`Theme task not found for this file!`));
-    }
-
-    if (gulp.tasks[`${task}:${theme}`]) {
-        gulp.start(`${task}:${theme}`);
-
-        return;
-    }
-    gutil.log(chalk.red(`Task ${task}:${theme} not found!`));
-}
+import del from 'del';
 
 function relativizePath(absolutePath) {
     return path.relative(process.cwd(), absolutePath);
 }
 
 export default function (done, theme) {
-    const pubPath = `${config.projectPath}/pub/static`;
-
     initSync();
-
-    if (theme) {
-        const themeRegistry = new ThemeRegistry();
-        const themeConfig = themeRegistry.getTheme(theme);
-        gulp.watch(`${themeConfig.path}**/*.${themeConfig.dsl}`, [`${themeConfig.dsl}:${theme}`]).on('change', stream => {
-            gutil.log(chalk.white(`File ${relativizePath(stream.path)} was changed`));
+    const assetDeployer = new AssetDeployer(theme);
+    const themeRegistry = new ThemeRegistry();
+    const themeConfig = themeRegistry.getTheme(theme);
+    const mainWatcher = gulp.watch(`${themeConfig.path}**/*.${themeConfig.dsl}`, gulp.series([`${themeConfig.dsl}:${theme}`]))
+        .on('change', path => {
+            log.info(chalk.white(`File ${relativizePath(path)} was changed`));
         });
 
-        return;
-    }
+    gulp.watch(`${themeConfig.sourcePath}**/*.${themeConfig.dsl}`)
+        .on('add', path => {
+            if (assetDeployer.isMagentoImportFile(path)) {
+                mainWatcher.unwatch(`${themeConfig.path}**/*.${themeConfig.dsl}`);
+                log.info(chalk.white(`File ${relativizePath(path)} detected as @magento_import, deploying source theme...`));
+                gulp.task(`exec:${theme}`)(() => {
+                    mainWatcher.add(`${themeConfig.path}**/*.${themeConfig.dsl}`);
+                    gulp.task(`${themeConfig.dsl}:${theme}`)();
+                });
+                return;
+            }
 
-    gulp.watch(`${pubPath}/**/*.less`).on('change', stream => {
-        gutil.log(chalk.white(`File ${relativizePath(stream.path)} was changed`));
+            gulp.src(path).pipe(gulp.symlink(assetDeployer.resolveSymlinkPath(path)));
+            log.info(chalk.white(`File ${relativizePath(path)} was created and linked pub`));
+        }).on('unlink', path => {
+            mainWatcher.unwatch(`${themeConfig.path}**/*.${themeConfig.dsl}`);
+            del([assetDeployer.resolveSymlinkPath(path)]).then(() => {
+                log.info(chalk.white(`File ${relativizePath(path)} was deleted`));
+                if (assetDeployer.isMagentoImportFile(path)) {
+                    log.info(chalk.white(`File ${relativizePath(path)} detected as @magento_import, deploying source theme...`));
+                    gulp.task(`exec:${theme}`)(() => {
+                        mainWatcher.add(`${themeConfig.path}**/*.${themeConfig.dsl}`);
+                        gulp.task(`${themeConfig.dsl}:${theme}`)();
+                    });
+                    return;
+                }
+                mainWatcher.add(`${themeConfig.path}**/*.${themeConfig.dsl}`);
+            });
+        });
 
-        runThemeTask(`less`, stream.path);
+    const requireJsCallback = cb => {
+        del([`${themeConfig.path}requirejs-config.js`]).then(() => {
+            log.info(chalk.white(`Combined RequireJS configuration file removed from pub/static.`));
+            cb();
+        });
+    };
 
-    });
-
-    gulp.watch(`${pubPath}/**/*.scss`).on('change', stream => {
-        gutil.log(chalk.white(`File ${relativizePath(stream.path)} was changed`));
-
-        runThemeTask(`scss`, stream.path);
-    });
+    gulp.watch([
+        'app/code/**/requirejs-config.js',
+        `${themeConfig.sourcePath}**/requirejs-config.js`
+    ], requireJsCallback);
 }

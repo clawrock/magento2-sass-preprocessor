@@ -12,3 +12,9 @@ taskRegister('exec', execTask, ['clean']);
 taskRegister('less', lessTask);
 taskRegister('scss', scssTask);
 taskRegister('watch', watchTask);
+
+taskRegister('build:scss', null, ['exec', 'scss']);
+taskRegister('build:less', null, ['exec', 'less']);
+
+taskRegister('dev:scss', null, ['exec', 'scss', 'watch']);
+taskRegister('dev:less', null, ['exec', 'less', 'watch']);
