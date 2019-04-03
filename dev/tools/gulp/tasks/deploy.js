@@ -5,13 +5,7 @@ export default function (done, theme) {
     const themeRegistry = new ThemeRegistry();
     const themeConfig = themeRegistry.getTheme(theme);
 
-    let command = `php bin/magento setup:static-content:deploy -f`;
-
-    if (themeConfig) {
-        command += ` --theme="${themeConfig.name}"`;
-    }
-
-    exec(command, (err, stdout, stderr) => {
+    exec(`php bin/magento setup:static-content:deploy -f --theme="${themeConfig.name}"`, (err, stdout, stderr) => {
         console.log(stdout);
         console.log(stderr);
         done(err);
