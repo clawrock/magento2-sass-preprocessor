@@ -62,26 +62,13 @@ List of gulp commands:
 #### BrowserSync
 Pass `--proxy http://magento.test` argument to `gulp watch:[theme_key]` or `gulp dev:scss[theme_key]` where http://magento.test is Magento base url and BrowserSync will be enabled.
 
-There are some BrowserSync options available (only string and boolean values are supported):
-- `--bs-ui`: [ui](https://www.browsersync.io/docs/options#option-ui)
-- `--bs-port`: [port](https://www.browsersync.io/docs/options#option-port)
-- `--bs-logLevel`: [logLevel](https://www.browsersync.io/docs/options#option-logLevel)
-- `--bs-logPrefix`: [logPrefix](https://www.browsersync.io/docs/options#option-logPrefix)
-- `--bs-logConnections`: [logConnections](https://www.browsersync.io/docs/options#option-logConnections)
-- `--bs-logFileChanges`: [logFileChanges](https://www.browsersync.io/docs/options#option-logFileChanges)
-- `--bs-open`: [open](https://www.browsersync.io/docs/options#option-open)
-- `--bs-browser`: [browser](https://www.browsersync.io/docs/options#option-browser)
-- `--bs-notify`: [notify](https://www.browsersync.io/docs/options#option-notify)
-- `--bs-scrollProportionally`: [scrollProportionally](https://www.browsersync.io/docs/options#option-scrollProportionally)
-- `--bs-scrollThrottle`: [scrollThrottle](https://www.browsersync.io/docs/options#option-scrollThrottle)
-- `--bs-reloadDelay`: [reloadDelay](https://www.browsersync.io/docs/options#option-reloadDelay)
-- `--bs-reloadDebounce`: [reloadDebounce](https://www.browsersync.io/docs/options#option-reloadDebounce)
-- `--bs-reloadThrottle`: [reloadThrottle](https://www.browsersync.io/docs/options#option-reloadThrottle)
-- `--bs-injectChanges`: [injectChanges](https://www.browsersync.io/docs/options#option-injectChanges)
-- `--bs-startPath`: [startPath](https://www.browsersync.io/docs/options#option-startPath)
+You can configure BrowserSync in `dev/tools/gulp/config/browser-sync.json`.
+[Reference](https://www.browsersync.io/docs/options)
 
 #### Example usage
-`gulp dev:scss:my_theme --proxy http://m2.test --phtml --bs-port=8080 --bs-open=0`
+`gulp dev:scss:my_theme --proxy http://m2.test --phtml`
 
 ## Troubleshooting
 If you had previously installed Grunt, please make sure you have removed package-lock.json and node_modules folder. Then run `npm install`.
+
+For development with enabled SSL please [provide path to SSL key and certificate](https://www.browsersync.io/docs/options/#option-https) in BrowserSync configuration file.
