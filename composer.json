@@ -2,7 +2,7 @@
     "name": "clawrock/magento2-sass-preprocessor",
     "description": "Module for Sass processing during static content deployment",
     "require": {
-        "magento/framework": "~101.0|~102.0",
+        "magento/framework": "~101.0|~102.0|~103.0",
         "leafo/scssphp": "^0.7.7",
         "magento/module-developer": "^100.2",
         "magento/module-store": "^100.2|^101.0"
